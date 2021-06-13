@@ -1,4 +1,4 @@
-function x_pre = GM11(x0)
+   function x_pre = GM11(x0)
 x0 = x0(:);
 n = length(x0);
 x1 = cumsum(x0);
