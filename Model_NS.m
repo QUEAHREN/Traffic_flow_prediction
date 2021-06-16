@@ -1,8 +1,16 @@
-    len_road = 200;         %道路长度
-    P = 0.3;                %随机慢化概率
-    Vmax = 5;               %最大速度
-    T = 1000;               %迭代步数
-    dens = 0.3;             %密度
+function [] = Model_NS(P, len_road, T, Vmax)
+                        %P为慢化概率
+    if nargin < 2   
+        len_road = 200; %道路长度
+    end     
+    if nargin < 3  
+        T = 1000;       %迭代步数
+    end     
+    if nargin < 4   
+        Vmax = 5;       %最大速度   
+    end    
+    
+    dens = 0.3;         %密度
     N = len_road * dens;
     RP = randperm(len_road);                %生成行向量，为1-len_road之间的整数随机置换         
     Car_Position = sort(RP(1, 1:N));        %截取前N个
@@ -60,4 +68,9 @@
         end 
         plot(t, Car_Position, '.k', 'markersize', 1);
         hold on;
+
     end
+
+
+end
+
