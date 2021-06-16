@@ -19,6 +19,8 @@ function [] = Model_NS(P, len_road, T, Vmax)
 
     %³õÊ¼×´Ì¬
     t = 1; 
+    xlabel("Time");
+    ylabel("Space")
     plot(t, Car_Position, '.k', 'markersize', 1);
     hold on;
 
