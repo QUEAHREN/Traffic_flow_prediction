@@ -5,7 +5,7 @@ for j = 8:12
        x0(i,1) =  data(j + (i-1)*24, 3);
        t(i, 1) = i;
     end
-    title(num2str(j-2) + ":00");
+    title("GM(1,1) " + num2str(j-2) + ":00");
     subplot(5, 1, j-7)
   
     x_pre = Model_GM11(x0);
@@ -17,6 +17,6 @@ for j = 8:12
     ylabel('¿ÍÁ÷Á¿');
     
 end
-title(num2str(11) + ":00");
+title("GM(1,1) " + num2str(11) + ":00");
 
 

@@ -1,16 +1,16 @@
-function [Odata, Ndata, RMSE] = Model_KNN(data, t, k, isplot)
 
+data = xlsread("Data.xlsx");
+t = 31;
     [r, ~] = size(data);
     ovec = zeros(r,3);
     vec = zeros(r,3);
     pvec = zeros(24,3);
-    newdata = zeros(24,1);
     y = zeros(r, 1);
     
     %读取除第t天外的历史数据交通环境构成数据库
     j = 1;
     for i = 1:r
-        if i >= 1+(t-1)*24&&i <= t*24
+        if i >= 1+(t-1)*24&&i<=t*24
             continue;
         end
         y(j) = i;
@@ -56,28 +56,17 @@ function [Odata, Ndata, RMSE] = Model_KNN(data, t, k, isplot)
     
     for i = 1:24
 
-        Mdl = fitcknn(vec,y,'NumNeighbors',k);  
-        index = predict(Mdl,pvec(i,:));
-        newdata(i) = data(index, 3); 
+        Mdl = fitcknn(vec,y,'NumNeighbors',1);  
+        Class = predict(Mdl,pvec(i,:));
+        newdata(i) = data(Class, 3); 
 
     end
-    
-    Odata = data((1+(t-1) *24):t*24,3);
-    Ndata = newdata;
-    RMSE = sqrt(mean((Ndata-Odata).^2));
-    
-    if isplot == 1
-        t0 = 0:1:23;
-        plot(t0, data((1+(t-1) *24):t*24,3),'.b--', 'markersize', 15);
-        hold on;
-        plot(t0, newdata(1:24),'.r--', 'markersize', 15);
-        hold on;
-        title("第" + num2str(t) + "天内车流量图(k = " + num2str(k) + " RMSE = " + num2str(RMSE)+")");
-        legend("原始值","预测值");
-        xlabel('时间(小时)');
-        ylabel('车流量');
-    end
-    
 
-end
+    t0 = 0:1:23;
+    plot(t0, data((1+(t-1) *24):t*24,3),'.b--', 'markersize', 10);
+    hold on;
+    plot(t0, newdata(1:24),'.r--', 'markersize', 10);
+    hold on;
+
+
 
