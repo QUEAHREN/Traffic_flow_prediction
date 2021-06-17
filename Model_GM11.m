@@ -1,4 +1,5 @@
 function x_pre = Model_GM11(x0)
+
     n = length(x0);
     x1 = cumsum(x0);
     for i = 1:n-1
@@ -19,4 +20,5 @@ function x_pre = Model_GM11(x0)
     for k = 1:n-1
         x_pre(k+1) = x_pre1(k+1)-x_pre1(k);
     end
+    
 end

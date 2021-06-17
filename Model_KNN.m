@@ -1,54 +1,62 @@
-data = xlsread("Data.xlsx");
+function [] = Model_KNN(data, t)
 
-set(0,'defaultfigurecolor','w');
-for i = 1:720
-    y(i) = i;
-    if i == 1
-        ovec(i,1) = data(i, 3);
+    [r, ~] = size(data);
+    ovec = zeros(r,3);
+    vec = zeros(r,3);
+    pvec = zeros(24,3);
+    for i = 1:r
+        y(i) = i;
+        if i == 1
+            ovec(i,1) = data(i, 3);
+            ovec(i,2) = data(i+1, 3);
+            ovec(i,3) = data(i, 2);
+            continue;
+        end
+        if i == r
+            ovec(i,1) = data(i-1, 3);
+            ovec(i,2) = data(i, 3);
+            ovec(i,3) = data(i, 2);
+            break;
+        end
+        ovec(i,1) = data(i-1, 3);
         ovec(i,2) = data(i+1, 3);
         ovec(i,3) = data(i, 2);
-        continue;
+
     end
-    if i == 720
-        ovec(i,1) = data(i-1, 3);
-        ovec(i,2) = data(i, 3);
-        ovec(i,3) = data(i, 2);
-        break;
+    for i = 1:3
+        vec(:,i) = (ovec(:,i) - min(ovec(:,i)))/(max(ovec(:,i)) - min(ovec(:,i)));
     end
-    ovec(i,1) = data(i-1, 3);
-    ovec(i,2) = data(i+1, 3);
-    ovec(i,3) = data(i, 2);
-   
-end
-for i = 1:3
-    vec(:,i) = (ovec(:,i) - min(ovec(:,i)))/(max(ovec(:,i)) - min(ovec(:,i)));
-end
 
-for i = 721:743
-%     if i == 744
-%         pvec(i-720, 1) = pvec(i-1, 3);
-%         pvec(i-720, 2) = pvec(i-1, 3);
-%         pvec(i-720, 3) = pvec(i, 2);
-%         continue;
-%     end
-    pvec(i-720,1) = data(i-1, 3);
-    pvec(i-720,2) = data(i+1, 3);
-    pvec(i-720,3) = data(i, 2);
+    for i = 1+(t-1)*24:t*24
+        if i == t*24
+            pvec(i-(t-1)*24, 1) = data(i-1, 3);
+            pvec(i-(t-1)*24, 2) = data(i-1, 3);
+            pvec(i-(t-1)*24, 3) = data(i, 2);
+            continue;
+        end
+        pvec(i-(t-1)*24,1) = data(i-1, 3);
+        pvec(i-(t-1)*24,2) = data(i+1, 3);
+        pvec(i-(t-1)*24,3) = data(i, 2);
+
+    end
+
+    for i = 1:3
+        pvec(:,i) = (pvec(:,i) - min(ovec(:,i)))/(max(ovec(:,i)) - min(ovec(:,i)));
+    end
     
+    for i = 1:24
+
+        Mdl = fitcknn(vec,y,'NumNeighbors',2);  
+        Class = predict(Mdl,pvec(i,:));
+        newdata(i) = data(Class, 3); 
+
+    end
+
+    t0 = 0:1:23;
+    plot(t0, data((1+(t-1) *24):t*24,3),'.b--', 'markersize', 10);
+    hold on;
+    plot(t0, newdata(1:24),'.r--', 'markersize', 10);
+    hold on;
+
 end
 
-for i = 1:3
-    pvec(:,i) = (pvec(:,i) - min(ovec(:,i)))/(max(ovec(:,i)) - min(ovec(:,i)));
-end
-for i = 1:23
-    
-    Mdl = fitcknn(vec,y,'NumNeighbors',2);  
-    Class = predict(Mdl,pvec(i,:));
-    newdata(i) = data(Class, 3); 
-
-end
-t = 0:1:22;
-plot(t, data(721:743,3),'.b--', 'markersize', 10);
-hold on;
-plot(t, newdata(1:23),'.r--', 'markersize', 10);
-hold on;
