@@ -1,6 +1,5 @@
 data = xlsread("Data.xlsx");
 
-set(0,'defaultfigurecolor','w');
 for j = 8:12
     for i = 1:31
        x0(i,1) =  data(j + (i-1)*24, 3);
